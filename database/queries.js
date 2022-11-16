@@ -7,7 +7,6 @@ const getScores = (req, res) => {
   pool
     .query(query)
     .then((data) => {
-      console.log(data.rows)
       res.send(
         data.rows
       )

@@ -10,7 +10,7 @@ export class Game {
     this.pathMatrix = map.layers[0].data
 
     //menu
-    this.selectedTower = ''
+    this.selectedTower = '' //for conditionally rendering the demo on the map
 
     let menubg = this.add.image(637, 256, 'menubackground').setDepth(1).setInteractive()
     menubg.on('pointerup', () => this.selectTower(''))
@@ -24,7 +24,6 @@ export class Game {
     this.startWaveCard = this.add.image(637, 474, 'startWaveCard').setDepth(2)
     this.ongoingWaveCard = this.add.image(637, 474, 'ongoingWaveCard').setDepth(5)
     this.ongoingWaveCard.setVisible(false)
-
 
     //create physics groups
     this.cannonTowers = this.physics.add.group()
@@ -106,38 +105,39 @@ export class Game {
 
     //sprite properties
     this.basicMonsterHealth = 2
+    this.runnerHealth = 2
     this.bossHealth = 25
   }
 
   update() {
     let currentCannonTowers = this.cannonTowers.getChildren()
     if (currentCannonTowers.length > 0) {
-      if (this.time.now > this.nextCannonCount) {
+      // if (this.time.now > this.nextCannonCount) {
         currentCannonTowers.forEach(tower => {
           this.fireTower(tower)
         })
-        this.nextCannonCount = this.time.now + 1000;
-      }
+      //   this.nextCannonCount = this.time.now + 1000;
+      // }
     }
 
     let currentArrowTowers = this.arrowTowers.getChildren()
     if (currentArrowTowers.length > 0) {
-      if (this.time.now > this.nextArrowCount) {
+      // if (this.time.now > this.nextArrowCount) {
         currentArrowTowers.forEach(tower => {
           this.fireTower(tower)
         })
-        this.nextArrowCount = this.time.now + 600;
-      }
+      //   this.nextArrowCount = this.time.now + 600;
+      // }
     }
 
     let currentWizardTowers = this.wizardTowers.getChildren()
     if (currentWizardTowers.length > 0) {
-      if (this.time.now > this.nextWizardCount) {
+      // if (this.time.now > this.nextWizardCount) {
         currentWizardTowers.forEach(tower => {
           this.fireTower(tower)
         })
-        this.nextWizardCount = this.time.now + 800;
-      }
+      //   this.nextWizardCount = this.time.now + 800;
+      // }
     }
 
     let count = this.enemies.getChildren()
@@ -158,6 +158,14 @@ export class Game {
     mover.setScale(.8)
     mover.health = this.basicMonsterHealth
     mover.type = 'basic'
+
+    this.tweens.add({
+      targets: mover,
+      scale: 1,
+      duration: 300,
+      yoyo: true,
+      repeat: -1,
+    })
 
     mover.startFollow({
       positionOnPath: true,
@@ -202,30 +210,84 @@ export class Game {
       delay: 20000,
       callback: () => {
         if (boss.health > 0) {
-          this.lives -= this.bossHealth
+          this.lives -= 25
           this.livesLabel.setText(this.lives)
         }
         boss.destroy()
-        this.bossHealth = this.bossHealth * 2
+      }
+    })
+  }
+
+  createRunner = function () {
+    let runner = this.add.follower(this.path, -40, 32, 'fastSprite');
+    this.enemies.add(runner)
+    runner.setOrigin(0.5, 0.5)
+    runner.setScale(.9)
+    runner.health = this.runnerHealth
+    runner.type = 'runner'
+
+    this.tweens.add({
+      targets: runner,
+      scale: 1.1,
+      duration: 300,
+      yoyo: true,
+      repeat: -1,
+    })
+
+    runner.startFollow({
+      positionOnPath: true,
+      duration: 7000,
+      yoyo: false,
+      repeat: 0,
+      rotateToPath: false,
+      verticalAdjust: true
+    });
+
+    this.time.addEvent({
+      delay: 7000,
+      callback: () => {
+        if (runner.health > 0) {
+          this.lives -= 1
+          this.livesLabel.setText(this.lives)
+        }
+        runner.destroy()
       }
     })
   }
 
   //fire the cannon
   fireTower = function (tower) {
+    if (tower.name === 'arrow' && tower.delay > this.time.now) {
+      return
+    } else if (tower.name === 'arrow' && tower.delay < this.time.now) {
+      tower.delay = this.time.now + 500
+    }
+    if (tower.name === 'cannon' && tower.delay > this.time.now) {
+      return
+    } else if (tower.name === 'cannon' && tower.delay < this.time.now) {
+      tower.delay = this.time.now + 1000
+    }
+    if (tower.name === 'wizard' && tower.delay > this.time.now) {
+      return
+    } else if (tower.name === 'wizard' && tower.delay < this.time.now) {
+      tower.delay = this.time.now + 800
+    }
     let currentEnemies = this.enemies.getChildren()
     let inRangeEnemy = closestEnemy(tower.x, tower.y, tower.range, currentEnemies)
     if (inRangeEnemy) {
       let projectile
       if (tower.name === 'cannon') {
         projectile = this.physics.add.sprite(tower.x, tower.y, 'cannonBall')
-        projectile.damage = 2
+        projectile.damage = 4
+        projectile.name = 'cannon'
       } else if (tower.name === 'arrow') {
         projectile = this.physics.add.sprite(tower.x, tower.y, 'arrow')
         projectile.damage = 1
+        projectile.name = 'arrow'
       } else if (tower.name === 'wizard') {
         projectile = this.physics.add.sprite(tower.x, tower.y, 'wizardBlast')
         projectile.damage = 3
+        projectile.name = 'wizard'
       }
 
       const velocity = inRangeEnemy.pathDelta.clone().scale(tower.velocityCheck / this.game.loop.delta); //.5-second velocity of sprite equates to two times in distance
@@ -250,6 +312,29 @@ export class Game {
 
       //add overlap
       this.physics.add.overlap(this.enemies, projectile, this.hit, null, this)
+
+      if (projectile.name === 'wizard') {
+        this.time.addEvent({
+          delay: 520,
+          callback: () => {
+            this.time.addEvent({
+              delay: 10,
+              callback: () => {
+                  this.createWizardFire(projectile.x, projectile.y)
+              },
+              repeat: Phaser.Math.RND.between(1, 2),
+            })
+            projectile.destroy()
+          }
+        })
+      } else {
+        this.time.addEvent({
+          delay: 7000,
+          callback: () => {
+            projectile.destroy()
+          }
+        })
+      }
     }
   }
 
@@ -260,8 +345,14 @@ export class Game {
     enemy.health = enemy.health - projectile.damage
     projectile.destroy()
 
-    if (enemy.type === 'boss') {
-      console.log(enemy.health)
+    if (projectile.name === 'wizard') {
+      this.time.addEvent({
+        delay: 10,
+        callback: () => {
+          this.createWizardFire(x, y)
+        },
+        repeat: Phaser.Math.RND.between(1, 4),
+      })
     }
 
     if (enemy.health <= 0) {
@@ -281,9 +372,22 @@ export class Game {
         this.scoreLabel.setText(this.score)
       }
       if (enemy.type === 'boss') {
-        this.currency += this.bossHealth
+        this.currency += 50
         this.currencyLabel.setText(this.currency)
         this.score += 100
+        this.scoreLabel.setText(this.score)
+        this.time.addEvent({
+          delay: 30,
+          callback: () => {
+            this.createExplosion(x, y)
+          },
+          repeat: Phaser.Math.RND.between(25, 35),
+        })
+      }
+      if (enemy.type === 'runner') {
+        this.currency += 2
+        this.currencyLabel.setText(this.currency)
+        this.score += 2
         this.scoreLabel.setText(this.score)
       }
     }
@@ -291,10 +395,24 @@ export class Game {
 
   createExplosion = function (x, y) {
     let explosion = this.add.image(x + Phaser.Math.RND.between(-7, 7), y + Phaser.Math.RND.between(-7, 7), 'explosion')
+    explosion.angle = Phaser.Math.RND.between(-135, 135)
     this.time.addEvent({
-      delay: 40,
+      delay: 30,
       callback: () => {
         explosion.destroy()
+      },
+    })
+  }
+
+  createWizardFire = function(x, y) {
+    let fire = this.physics.add.sprite(x + Phaser.Math.RND.between(-7, 7), y + Phaser.Math.RND.between(-7, 7), 'wizardFire')
+    fire.name = 'fire'
+    fire.damage = 1
+    this.physics.add.overlap(this.enemies, fire, this.hit, null, this)
+    this.time.addEvent({
+      delay: 150,
+      callback: () => {
+        fire.destroy()
       },
     })
   }
@@ -338,10 +456,11 @@ export class Game {
           this.cannonTowers.add(tower)
           this.currency -= 50
           this.currencyLabel.setText(this.currency)
+          this.pathMatrix[i][j].properties.path = true
+          this.delay = 0
         }
         this.cannonCard.clearTint()
         this.selectedTower = ''
-        this.pathMatrix[i][j].properties.path = true
         this.cannonDemo.setVisible(false)
         this.cannonRange.setVisible(false)
       } else if (this.selectedTower === 'arrow') {
@@ -355,10 +474,11 @@ export class Game {
           this.arrowTowers.add(tower)
           this.currency -= 25
           this.currencyLabel.setText(this.currency)
+          this.pathMatrix[i][j].properties.path = true
+          this.delay = 0
         }
         this.arrowCard.clearTint()
         this.selectedTower = ''
-        this.pathMatrix[i][j].properties.path = true
         this.arrowDemo.setVisible(false)
         this.arrowRange.setVisible(false)
       } else if (this.selectedTower === 'wizard') {
@@ -372,10 +492,11 @@ export class Game {
           this.wizardTowers.add(tower)
           this.currency -= 100
           this.currencyLabel.setText(this.currency)
+          this.pathMatrix[i][j].properties.path = true
+          this.delay = 0
         }
         this.wizardCard.clearTint()
         this.selectedTower = ''
-        this.pathMatrix[i][j].properties.path = true
         this.wizardDemo.setVisible(false)
         this.wizardRange.setVisible(false)
       }
@@ -463,32 +584,62 @@ export class Game {
     this.ongoingWaveCard.setVisible(true)
     this.waveDelay = this.time.now + 1000
 
-    if (this.wave % 5 === 0) {
+    if (this.wave % 3 === 0) {
       this.basicMonsterHealth+= 1
     }
 
-    if (enemyCount.length === 0) {
-      this.time.addEvent({
-        delay: 100,
-        callback: () => {
-          this.createLittleFella()
-        },
-        repeat: this.enemiesToSpawn,
-      })
+    if (this.wave % 3 !== 0) {
+      if (enemyCount.length === 0) {
+        this.time.addEvent({
+          delay: 100,
+          callback: () => {
+            this.createLittleFella()
+          },
+          repeat: this.enemiesToSpawn,
+        })
+      }
+    } else {
+      if (enemyCount.length === 0) {
+        this.time.addEvent({
+          delay: 100,
+          callback: () => {
+            this.createRunner()
+          },
+          repeat: this.enemiesToSpawn / 3,
+        })
+      }
     }
 
-    if (this.wave % 5 === 0) {
+
+    if (this.wave % 5 === 0 && this.wave % 3 === 0) {
+      this.time.addEvent({
+        delay: ((this.enemiesToSpawn/3) - 1) * 100,
+        callback: () => {
+          this.createBoss()
+        },
+        repeat: (this.wave / 5) - 1
+      })
+    } else if (this.wave % 5 === 0) {
       this.time.addEvent({
         delay: (this.enemiesToSpawn - 1) * 100,
         callback: () => {
           this.createBoss()
-        }
+        },
+        repeat: (this.wave / 5) - 1
       })
     }
 
     this.wave += 1
     this.waveLabel.setText(this.wave)
     this.enemiesToSpawn += 5
+
+    if (this.wave % 6 === 0) {
+      this.runnerHealth += 2
+    }
+
+    if (this.wave % 5 === 0 && this.wave !== 5) {
+      this.bossHealth += 5 * this.wave
+    }
   }
 
   checkHealth = function() {

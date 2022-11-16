@@ -13,26 +13,30 @@ export class Load {
     this.load.image('wizardBlast', 'assets/wizardBlast.png')
     this.load.image('explosion', 'assets/explosion.png')
     this.load.image('bossMonster', 'assets/bossMonster.png')
+    this.load.image('fastSprite', 'assets/fastSprite.png')
+    this.load.image('wizardFire', 'assets/wizardFire.png')
 
     //in game menu items
-    this.load.image('menubackground', 'assets/menu/menuBackground2.png')
-    this.load.image('cannonCard', 'assets/menu/cannonCard.png')
-    this.load.image('arrowCard', 'assets/menu/arrowCard.png')
-    this.load.image('wizardCard', 'assets/menu/wizardCard.png')
-    this.load.image('infoCard', 'assets/menu/infoCard.png')
-    this.load.image('startWaveCard', 'assets/menu/startWaveCard.png')
-    this.load.image('ongoingWaveCard', 'assets/menu/ongoingWaveCard.png')
+    this.load.image('menubackground', 'assets/Menu/menuBackground2.png')
+    this.load.image('cannonCard', 'assets/Menu/cannonCard.png')
+    this.load.image('arrowCard', 'assets/Menu/arrowCard.png')
+    this.load.image('wizardCard', 'assets/Menu/wizardCard.png')
+    this.load.image('infoCard', 'assets/Menu/infoCard.png')
+    this.load.image('startWaveCard', 'assets/Menu/startWaveCard.png')
+    this.load.image('ongoingWaveCard', 'assets/Menu/ongoingWaveCard.png')
 
     //main menu items
     this.load.image('mainBackground', 'assets/MainMenu/mainMenuBG.png')
     this.load.image('mainTitleCard', 'assets/MainMenu/mainTitleCard.png')
     this.load.image('playButton', 'assets/MainMenu/playButton.png')
-    this.load.image('loginButton', 'assets/MainMenu/loginButton.png')
+    this.load.image('infoButton', 'assets/Menu/infoButton.png')
     this.load.image('topScoresButton', 'assets/MainMenu/topScoresButton.png')
     this.load.image('scoreBoard', 'assets/MainMenu/scoreBoard.png')
     this.load.image('submitButton', 'assets/MainMenu/submitButton.png')
     this.load.image('submittedButton', 'assets/MainMenu/submittedButton.png')
     this.load.image('homeButton', 'assets/MainMenu/homeButton.png')
+    this.load.image('mask', 'assets/mask.png')
+    this.load.image('infoPage', 'assets/Menu/infoPage.png')
   }
 
   create() {
