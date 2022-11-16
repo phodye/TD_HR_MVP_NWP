@@ -7,13 +7,14 @@
   "scripts": {
     "test": "test",
     "server": "nodemon server/index.js",
-    "seed": "node ./database/seed.js"
+    "start" : "node server/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "mongoose": "^6.7.2",
     "pg": "^8.8.0",
     "phaser": "^3.55.2"
   }

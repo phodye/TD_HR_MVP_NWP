@@ -1,6 +1,7 @@
 export class Topscores {
   create(data) {
     let topScores = data.topScores ? data.topScores : null
+    console.log('top scores', topScores)
 
     let mainBg = this.add.image(381, 256, 'mainBackground')
     let scoreBoard = this.add.image(381, 256, 'scoreBoard')

@@ -63,8 +63,8 @@ export class Menu {
     this.projectiles = this.physics.add.group()
     this.physics.add.overlap(this.enemies, this.projectiles, this.hit, null, this)
 
-    let tower = this.physics.add.sprite(381, 256, 'cannonTower').setDepth(4).setAlpha(0)
-    tower.setScale(2)
+    let tower = this.physics.add.sprite(381, 248, 'cannonTower').setDepth(4).setAlpha(0)
+    tower.setScale(3)
     let mask1 = this.physics.add.sprite(90, 256, 'mask').setDepth(4)
     mask1.setScale(1.5)
     let mask2 = this.physics.add.sprite(673, 256, 'mask').setDepth(4)
@@ -145,7 +145,7 @@ export class Menu {
   axiosGetScores = function () {
     axios.get("/scores", { name: "data" }).then((response) => {
       response.data.forEach(row => {
-        let data = { username: row.username, topscore: row.topscore }
+        let data = { username: row.user, topscore: row.score }
         this.topScores.push(data)
       })
     }).catch((err) => {

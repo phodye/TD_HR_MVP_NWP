@@ -587,6 +587,12 @@ export class Game {
     if (this.wave % 3 === 0) {
       this.basicMonsterHealth+= 1
     }
+    if (this.wave % 3 === 0 && this.wave > 10) {
+      this.basicMonsterHealth+= 1
+    }
+    if (this.wave % 3 === 0 && this.wave > 20) {
+      this.basicMonsterHealth+= 1
+    }
 
     if (this.wave % 3 !== 0) {
       if (enemyCount.length === 0) {
@@ -615,17 +621,27 @@ export class Game {
       this.time.addEvent({
         delay: ((this.enemiesToSpawn/3) - 1) * 100,
         callback: () => {
-          this.createBoss()
-        },
-        repeat: (this.wave / 5) - 1
+          this.time.addEvent({
+            delay: 2500,
+            callback: () => {
+              this.createBoss()
+            },
+            repeat: (this.wave / 5) - 1
+          })
+        }
       })
     } else if (this.wave % 5 === 0) {
       this.time.addEvent({
         delay: (this.enemiesToSpawn - 1) * 100,
         callback: () => {
-          this.createBoss()
-        },
-        repeat: (this.wave / 5) - 1
+          this.time.addEvent({
+            delay: 2500,
+            callback: () => {
+              this.createBoss()
+            },
+            repeat: (this.wave / 5) - 1
+          })
+        }
       })
     }
 
@@ -634,11 +650,11 @@ export class Game {
     this.enemiesToSpawn += 5
 
     if (this.wave % 6 === 0) {
-      this.runnerHealth += 2
+      this.runnerHealth += 3
     }
 
     if (this.wave % 5 === 0 && this.wave !== 5) {
-      this.bossHealth += 5 * this.wave
+      this.bossHealth += 8 * this.wave
     }
   }
 
