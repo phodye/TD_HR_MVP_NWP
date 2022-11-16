@@ -11,6 +11,8 @@ export class Load {
     this.load.image('arrow', 'assets/arrow.png')
     this.load.image('wizardTower', 'assets/wizardTower.png')
     this.load.image('wizardBlast', 'assets/wizardBlast.png')
+    this.load.image('explosion', 'assets/explosion.png')
+    this.load.image('bossMonster', 'assets/bossMonster.png')
 
     //in game menu items
     this.load.image('menubackground', 'assets/menu/menuBackground2.png')
@@ -27,6 +29,10 @@ export class Load {
     this.load.image('playButton', 'assets/MainMenu/playButton.png')
     this.load.image('loginButton', 'assets/MainMenu/loginButton.png')
     this.load.image('topScoresButton', 'assets/MainMenu/topScoresButton.png')
+    this.load.image('scoreBoard', 'assets/MainMenu/scoreBoard.png')
+    this.load.image('submitButton', 'assets/MainMenu/submitButton.png')
+    this.load.image('submittedButton', 'assets/MainMenu/submittedButton.png')
+    this.load.image('homeButton', 'assets/MainMenu/homeButton.png')
   }
 
   create() {

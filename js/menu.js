@@ -1,6 +1,7 @@
 export class Menu {
-  create(data) {
-    let score = data.score ? data.score : 0
+  create() {
+    this.topScores = []
+    this.axiosGetScores()
 
     let mainBg = this.add.image(381, 256, 'mainBackground')
     let mainTitle = this.add.image(381, 190, 'mainTitleCard')
@@ -39,7 +40,7 @@ export class Menu {
     })
 
     let loginSquare = this.add.rectangle(380, 410, 198, 45).setInteractive()
-    loginSquare.on('pointerdown', pointer => this.axiosPost())
+    loginSquare.on('pointerdown', pointer => this.goToLogin())
     loginSquare.on('pointermove', pointer => this.tintHover(loginButton))
     loginSquare.on('pointerout', pointer => this.tintOff(loginButton))
 
@@ -53,7 +54,7 @@ export class Menu {
       duration: 1300,
     })
     let topScoresSquare = this.add.rectangle(620, 410, 198, 45).setInteractive()
-    topScoresSquare.on('pointerdown', pointer => this.startGame())
+    topScoresSquare.on('pointerdown', pointer => this.goToTopscores())
     topScoresSquare.on('pointermove', pointer => this.tintHover(topScoresButton))
     topScoresSquare.on('pointerout', pointer => this.tintOff(topScoresButton))
   }
@@ -63,7 +64,7 @@ export class Menu {
   }
 
   tintHover(button) {
-    button.setTint(0xE16600)
+    button.setTint(0xD8D8D8)
   }
 
   tintOff(button) {
@@ -72,6 +73,25 @@ export class Menu {
 
   startGame = function() {
     this.scene.start('game')
+  }
+
+  goToLogin = function() {
+    this.scene.start('login')
+  }
+
+  goToTopscores = function() {
+    this.scene.start('topscores', {topScores: this.topScores})
+  }
+
+  axiosGetScores = function () {
+    axios.get("/scores", { name: "data" }).then((response) => {
+      response.data.forEach(row => {
+        let data = {username: row.username, topscore: row.topscore}
+        this.topScores.push(data)
+      })
+    }).catch((err) => {
+      console.log(err)
+    })
   }
 
   axiosPost = function () {

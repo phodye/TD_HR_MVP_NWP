@@ -85,6 +85,28 @@ export class Game {
     waveSquare.on('pointerdown', pointer => this.startWave());
     this.enemiesToSpawn = 29
     this.waveDelay = 0
+
+    //path
+    this.path = new Phaser.Curves.Path(-40, 32)
+
+    this.path.lineTo(-40, 32)
+    this.path.lineTo(47, 32)
+    this.path.lineTo(47, 465)
+    this.path.lineTo(160, 465)
+    this.path.lineTo(160, 385)
+    this.path.lineTo(112, 385)
+    this.path.lineTo(112, 270)
+    this.path.lineTo(240, 270)
+    this.path.lineTo(240, 370)
+    this.path.lineTo(304, 370)
+    this.path.lineTo(304, 47)
+    this.path.lineTo(448, 47)
+    this.path.lineTo(448, 465)
+    this.path.lineTo(530, 465)
+
+    //sprite properties
+    this.basicMonsterHealth = 2
+    this.bossHealth = 25
   }
 
   update() {
@@ -104,7 +126,7 @@ export class Game {
         currentArrowTowers.forEach(tower => {
           this.fireTower(tower)
         })
-        this.nextArrowCount = this.time.now + 700;
+        this.nextArrowCount = this.time.now + 600;
       }
     }
 
@@ -124,32 +146,18 @@ export class Game {
     } else {
       this.ongoingWaveCard.setVisible(true)
     }
+
+    this.checkHealth()
   }
 
-
+  //monster factories
   createLittleFella = function () {
-    let path = new Phaser.Curves.Path(-40, 32)
-
-    path.lineTo(-40, 32)
-    path.lineTo(47, 32)
-    path.lineTo(47, 465)
-    path.lineTo(160, 465)
-    path.lineTo(160, 385)
-    path.lineTo(112, 385)
-    path.lineTo(112, 270)
-    path.lineTo(240, 270)
-    path.lineTo(240, 370)
-    path.lineTo(304, 370)
-    path.lineTo(304, 47)
-    path.lineTo(448, 47)
-    path.lineTo(448, 465)
-    path.lineTo(530, 465)
-
-    let mover = this.add.follower(path, -40, 32, 'littleMonster');
+    let mover = this.add.follower(this.path, -40, 32, 'littleMonster');
     this.enemies.add(mover)
     mover.setOrigin(0.5, 0.5)
     mover.setScale(.8)
-    mover.health = 2
+    mover.health = this.basicMonsterHealth
+    mover.type = 'basic'
 
     mover.startFollow({
       positionOnPath: true,
@@ -170,6 +178,36 @@ export class Game {
         mover.destroy()
       },
       loop: false,
+    })
+  }
+
+  createBoss = function () {
+    let boss = this.add.follower(this.path, -40, 32, 'bossMonster');
+    this.enemies.add(boss)
+    boss.setOrigin(0.5, 0.5)
+    boss.setScale(.9)
+    boss.health = this.bossHealth
+    boss.type = 'boss'
+
+    boss.startFollow({
+      positionOnPath: true,
+      duration: 20000,
+      yoyo: false,
+      repeat: 0,
+      rotateToPath: false,
+      verticalAdjust: true
+    });
+
+    this.time.addEvent({
+      delay: 20000,
+      callback: () => {
+        if (boss.health > 0) {
+          this.lives -= this.bossHealth
+          this.livesLabel.setText(this.lives)
+        }
+        boss.destroy()
+        this.bossHealth = this.bossHealth * 2
+      }
     })
   }
 
@@ -222,14 +260,43 @@ export class Game {
     enemy.health = enemy.health - projectile.damage
     projectile.destroy()
 
-    if (enemy.health <= 0) {
-      enemy.destroy()
-      this.currency += 1
-      this.currencyLabel.setText(this.currency)
-
-      this.score += 1
-      this.scoreLabel.setText(this.score)
+    if (enemy.type === 'boss') {
+      console.log(enemy.health)
     }
+
+    if (enemy.health <= 0) {
+      this.time.addEvent({
+        delay: 30,
+        callback: () => {
+          this.createExplosion(x, y)
+        },
+        repeat: Phaser.Math.RND.between(1, 5),
+      })
+
+      enemy.destroy()
+      if (enemy.type === 'basic') {
+        this.currency += 1
+        this.currencyLabel.setText(this.currency)
+        this.score += 1
+        this.scoreLabel.setText(this.score)
+      }
+      if (enemy.type === 'boss') {
+        this.currency += this.bossHealth
+        this.currencyLabel.setText(this.currency)
+        this.score += 100
+        this.scoreLabel.setText(this.score)
+      }
+    }
+  }
+
+  createExplosion = function (x, y) {
+    let explosion = this.add.image(x + Phaser.Math.RND.between(-7, 7), y + Phaser.Math.RND.between(-7, 7), 'explosion')
+    this.time.addEvent({
+      delay: 40,
+      callback: () => {
+        explosion.destroy()
+      },
+    })
   }
 
   //select the passed in tower name
@@ -318,7 +385,7 @@ export class Game {
   //demoing turret when selected
   demoTurret = function (pointer) {
     if (pointer.x > 512) return;
-    // console.log("In the demo")
+
     const y = Math.floor(pointer.y / 16);
     const x = Math.floor(pointer.x / 16);
     if (!this.pathMatrix[y][x].properties.path) {
@@ -396,11 +463,13 @@ export class Game {
     this.ongoingWaveCard.setVisible(true)
     this.waveDelay = this.time.now + 1000
 
+    if (this.wave % 5 === 0) {
+      this.basicMonsterHealth+= 1
+    }
+
     if (enemyCount.length === 0) {
-      this.wave += 1
-      this.waveLabel.setText(this.wave)
       this.time.addEvent({
-        delay: 500,
+        delay: 100,
         callback: () => {
           this.createLittleFella()
         },
@@ -408,7 +477,28 @@ export class Game {
       })
     }
 
+    if (this.wave % 5 === 0) {
+      this.time.addEvent({
+        delay: (this.enemiesToSpawn - 1) * 100,
+        callback: () => {
+          this.createBoss()
+        }
+      })
+    }
+
+    this.wave += 1
+    this.waveLabel.setText(this.wave)
     this.enemiesToSpawn += 5
+  }
+
+  checkHealth = function() {
+    if (this.lives <= 0) {
+      this.scene.start('gameover', {
+        score: this.score,
+        gold: this.currency,
+        round: this.wave - 1
+      })
+    }
   }
 };
 
