@@ -18,6 +18,7 @@ app.post('/scores', (req, res) => {
 })
 
 app.get('/scores', (req, res) => {
+  console.log("got a get")
   TowerDefenses.find({}).sort({score: -1}).limit(5).then(data => {
     res.send(data)
   }).catch(err => {
