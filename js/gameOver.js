@@ -1,6 +1,6 @@
 export class Gameover {
   create(data) {
-    let score = data.score ? data.score : 'ZERO'
+    let score = data.score ? data.score : 0
     this.submitScore = score
     let round = data.round ? data.round : 1
     let gold = data.gold ? data.gold : 0
