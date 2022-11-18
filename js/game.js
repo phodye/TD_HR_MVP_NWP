@@ -44,7 +44,7 @@ export class Game {
     this.cannonDemo = this.add.sprite(0, 0, 'cannonTower');
     this.cannonDemo.setVisible(false)
     this.cannonDemo.setAlpha(.5)
-    this.cannonRange = this.add.circle(0, 0, 75)
+    this.cannonRange = this.add.circle(0, 0, 150)
     this.cannonRange.setStrokeStyle(2, 0x000000)
     this.cannonRange.setAlpha(.5)
     this.cannonRange.setVisible(false)
@@ -265,7 +265,7 @@ export class Game {
     if (tower.name === 'cannon' && tower.delay > this.time.now) {
       return
     } else if (tower.name === 'cannon' && tower.delay < this.time.now) {
-      tower.delay = this.time.now + 1000
+      tower.delay = this.time.now + 2000
     }
     if (tower.name === 'wizard' && tower.delay > this.time.now) {
       return
@@ -278,7 +278,7 @@ export class Game {
       let projectile
       if (tower.name === 'cannon') {
         projectile = this.physics.add.sprite(tower.x, tower.y, 'cannonBall')
-        projectile.damage = 4
+        projectile.damage = 12
         projectile.name = 'cannon'
       } else if (tower.name === 'arrow') {
         projectile = this.physics.add.sprite(tower.x, tower.y, 'arrow')
@@ -450,7 +450,7 @@ export class Game {
           let tower = this.physics.add.sprite(pointer.x, pointer.y, 'cannonTower')
           tower.delay = 0
           tower.name = 'cannon'
-          tower.range = 75
+          tower.range = 150
           tower.velocityCheck = 500
           tower.multiplier = 2
           this.cannonTowers.add(tower)
@@ -588,10 +588,19 @@ export class Game {
       this.basicMonsterHealth+= 1
     }
     if (this.wave % 3 === 0 && this.wave > 10) {
-      this.basicMonsterHealth+= 1
+      this.basicMonsterHealth+= 2
     }
     if (this.wave % 3 === 0 && this.wave > 20) {
-      this.basicMonsterHealth+= 1
+      this.basicMonsterHealth+= 3
+    }
+    if (this.wave % 3 === 0 && this.wave > 30) {
+      this.basicMonsterHealth+= 4
+    }
+    if (this.wave % 3 === 0 && this.wave > 40) {
+      this.basicMonsterHealth+= 5
+    }
+    if (this.wave % 3 === 0 && this.wave > 50) {
+      this.basicMonsterHealth+= 6
     }
 
     if (this.wave % 3 !== 0) {
@@ -650,6 +659,12 @@ export class Game {
     this.enemiesToSpawn += 5
 
     if (this.wave % 6 === 0) {
+      this.runnerHealth += 3
+    }
+    if (this.wave % 6 === 0 && this.wave > 15) {
+      this.runnerHealth += 3
+    }
+    if (this.wave % 6 === 0 && this.wave > 30) {
       this.runnerHealth += 3
     }
 
