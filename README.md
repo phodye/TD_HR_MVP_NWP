@@ -9,7 +9,7 @@ Castle Crusher is a tower defense game built as a means to learn more about obje
 ![Phaser3](https://img.shields.io/badge/PHASER3-%2300ff99.svg?style=for-the-badge&logoColor=green)
 
 ##Game Play Demo
-https://user-images.githubusercontent.com/101359460/208187868-bff50211-4f82-4bc6-8309-a0834f56e6f5.mov
+![Game play](https://user-images.githubusercontent.com/101359460/208187868-bff50211-4f82-4bc6-8309-a0834f56e6f5.mov)
 <p>Basic game play</p>
-https://user-images.githubusercontent.com/101359460/208188914-726f5884-1454-47f6-8994-3d31a3af0e3c.mov
+![Death by boss, leaderboard](https://user-images.githubusercontent.com/101359460/208188914-726f5884-1454-47f6-8994-3d31a3af0e3c.mov)
 <p>Death by boss and putting your initials in for the leader board</p>
