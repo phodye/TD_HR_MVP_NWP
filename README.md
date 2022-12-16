@@ -1,6 +1,6 @@
 # Castle Crusher
 
-Castle Crusher is a tower defense game built as a means to learn more about object oriented programming and the Phaser 3 game engine. 
+Castle Crusher is a tower defense game built as a means to learn more about object oriented programming and the Phaser 3 game engine. The main game features waves of enemies that scale as the game levels. The player begins with 100 lives and 100 gold and must strategically place towers to stop the waves of enemies. Each enemy succesfully dispatched will earn the player more gold. Any enemy succesfully running the path will damage the player's lives. Upon reaching 0 lives users will be asked to input their initials to post their scores on the leaderboard. The main menu also offers a few other options- a player can checkout the available towers and their attributes on the info page where they can also view a list of enemies they will face. A player  can also checkout the top five scorers on the leaderboard.
 
 ## Tech Stack
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
