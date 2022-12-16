@@ -20,10 +20,10 @@ The above video demonstrates the end of the game when a user is defeated and ask
 
 ## Screenshots
 ![CCHome](https://user-images.githubusercontent.com/101359460/208190653-f697391f-6010-4bba-8514-4b3f90228d70.png)
-The Home Screen
+<p>The Home Screen</p>
 ![CCInfo](https://user-images.githubusercontent.com/101359460/208190848-0e1dbc4f-417b-48c1-ae47-86210a855cc9.png)
-An info page displaying the towers available to the players and the enemies they will face
+<p>An info page displaying the towers available to the players and the enemies they will face</p>
 ![CCGame](https://user-images.githubusercontent.com/101359460/208191222-d3cfbe74-819f-4762-bca5-15f237aa8ae8.png)
-Game play
+<p>Game play</p>
 ![CCLeader](https://user-images.githubusercontent.com/101359460/208191251-14d99981-c868-477e-a758-f9defaef0f9b.png)
-The leaderboard- displays the initials of the top five scorers of the game 
+<p>The leaderboard- displays the initials of the top five scorers of the game </p>
